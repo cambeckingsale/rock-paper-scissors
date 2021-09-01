@@ -39,6 +39,7 @@ function getResultString(sumOfSelection, res) {
 }
 
 function playRound(playerSelection) {
+    const resultBox = document.querySelector('.result')
     let playerSelectionNum = selectionToNum(playerSelection);
     console.log("SCISSORS, PAPER, ROCK!\n");
     let computerSelectionNum = computerPlay();
@@ -46,15 +47,17 @@ function playRound(playerSelection) {
     let res = calcWinner(playerSelectionNum, computerSelectionNum);
     if (res == 0) {
         console.log("It was a tie.\n"); 
+        resultBox.textContent = "It was a tie.\n";
     }
     else {
         console.log(getResultString(playerSelectionNum+computerSelectionNum, res));
+        resultBox.textContent = getResultString(playerSelectionNum+computerSelectionNum, res);
     }
     return res
 }
 
 function playGame() {
-    let score = 0
+    let score = 0;
     let playerSelection = prompt("Choose your fighter!?", "Rock/Paper/Scissors");
     while (selectionToNum(playerSelection) == undefined) {
         playerSelection = prompt("Thats not a fighter! Try again!", "Rock/Paper/Scissors");
@@ -65,5 +68,41 @@ function playGame() {
     console.log(`At the end of 5 rounds you ${score < 0 ? "lost" : "won"}!`)
 }
 
-playGame();
+const onButtonClick = (e) => {
+    const player = document.querySelector('#player');
+    player.textContent = playerScore;
+    const computer = document.querySelector('#computer');
+    computer.textContent = computerScore;
+    console.log(e.target.value);
+    let result = playRound(e.target.value);
+    if (result > 0) {
+        playerScore += 1;
+        player.textContent = playerScore;
+    }
+    else if (result < 0) {
+        computerScore += 1;
+        computer.textContent = computerScore;
+    }
+    if (playerScore == 5 || computerScore == 5) {
+        playerScore = 0;
+        computerScore = 0;
+        const resultBox = document.querySelector('.result')
+        if (computerScore > playerScore) {
+            document.querySelector('.result').textContent = "You loose! Pick a tool to play again!"
+        }
+        else {
+            document.querySelector('.result').textContent = "You win! Pick a tool to play again!"
+        }
 
+    }
+
+    
+}
+
+const buttons = Array.from(document.querySelectorAll('.button'));
+buttons.forEach((button) => {
+    button.addEventListener('click', onButtonClick);
+});
+
+let playerScore = 0;
+let computerScore = 0;
